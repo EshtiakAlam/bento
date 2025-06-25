@@ -1,25 +1,38 @@
 require('dotenv').config();
 
 const express = require('express');
-const connectDB = require('./db');
-const authRoutes = require('./routes/auth');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/authRoutes');
+const cookieParser = require('cookie-parser');
+const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.static('public'));
+app.use(cookieParser());
 
-// Route registration
-app.use('/auth', authRoutes);
+// View engine
+app.set('view engine', 'ejs');
 
-// Health-check endpoint
-app.get('/health', (_, res) => {
-    res.status(200).json({ status: 'ok' });
-});
 
-connectDB();
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(process.env.PORT, () => {
+        console.log(`Server running on port ${process.env.PORT}`);
+    });
+}).catch(err => console.error('MongoDB connection error:', err));
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Auth service running on port ${PORT}`));
 
-module.exports = app;
+// routes
+app.get('*', checkUser);
+app.get('/', (req, res) => res.render('home'));
+app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
+app.use(authRoutes);
+
+

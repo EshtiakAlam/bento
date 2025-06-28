@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 
 // Handle errors for Mongoose operations
 const handleErrors = (err) => {
-  let errors = { email: '', password: '' };
+  let errors = { username: '', email: '', password: '' };
+
 
   // Incorrect email
   if (err.message === 'Incorrect email') {
@@ -41,9 +42,9 @@ const createToken = (id, username, email) => {
 module.exports.signup_post = async (req, res) => {
   const {email, username, password} = req.body;
   try {
-    const user = await User.create({ email, username, password });
+    const user = await User.create({ username, email, password });
     const token = createToken(user._id,  username, email);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); // 1 day
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.status(201).json({user: user._id});
   }
   catch (error) { 
@@ -58,7 +59,7 @@ module.exports.login_post = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user._id, user.username, email);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); // 1 day
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); 
     res.status(200).json({ user: user._id });
   } catch (error) {
     const errors = handleErrors(error);
@@ -67,6 +68,6 @@ module.exports.login_post = async (req, res) => {
 }
 
 module.exports.logout_get = (req, res) => {
-  res.cookie('jwt', '', { maxAge: 1 }); // Clear the cookie by setting its maxAge to 1
+  res.cookie('jwt', '', { maxAge: 1 });
   res.redirect('/');
 }

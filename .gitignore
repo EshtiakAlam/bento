@@ -1,4 +1,8 @@
+.env
 auth-service/node_modules/
-auth-service/.env
 auth-service/views/
 auth-service/public/
+
+chat-backend/node_modules/
+chat-backend/views/
+chat-backend/nodemon

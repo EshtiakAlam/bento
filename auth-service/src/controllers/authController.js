@@ -31,25 +31,18 @@ const handleErrors = (err) => {
 }
 
 // Create a JWT token
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const createToken = (id, username, email) => {
+  return jwt.sign({ id, username, email }, process.env.JWT_SECRET, {
     expiresIn: '1d'
   });
 }
 
-module.exports.signup_get = (req, res) => {
-  res.render('signup');
-}
-
-module.exports.login_get = (req, res) => {
-  res.render('login');
-}
 
 module.exports.signup_post = async (req, res) => {
-  const {email, password} = req.body;
+  const {email, username, password} = req.body;
   try {
-    const user = await User.create({ email, password });
-    const token = createToken(user._id);
+    const user = await User.create({ email, username, password });
+    const token = createToken(user._id,  username, email);
     res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); // 1 day
     res.status(201).json({user: user._id});
   }
@@ -64,7 +57,7 @@ module.exports.login_post = async (req, res) => {
 
   try {
     const user = await User.login(email, password);
-    const token = createToken(user._id);
+    const token = createToken(user._id, user.username, email);
     res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); // 1 day
     res.status(200).json({ user: user._id });
   } catch (error) {

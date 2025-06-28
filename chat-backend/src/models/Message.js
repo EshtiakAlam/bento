@@ -3,7 +3,7 @@ const sequelize = require('../db');
 const Chat = require('./Chat');
 
 const Message = sequelize.define('Message', {
-  chat_id: { type: DataTypes.INTEGER, allowNull: false },
+  chat_id: { type: DataTypes.UUID, allowNull: false },
   sender_email: { type: DataTypes.STRING, allowNull: false },
   sender_username: { type: DataTypes.STRING, allowNull: false },
   content: { type: DataTypes.TEXT, allowNull: false },

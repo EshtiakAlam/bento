@@ -3,7 +3,7 @@ const chatController = require('../controllers/chatController.js');
 
 const router = Router();
 
-router.get('/:chat_id', chatController.get_byID);
+router.get('/', chatController.get);
 router.post('/', chatController.post);
 
 module.exports = router;

@@ -28,6 +28,7 @@ services:
     build: ./chat-backend
     container_name: chat-backend
     environment:
+      - JWT_SECRET
       - BACKEND_PORT
       - POSTGRES_DB
       - POSTGRES_USER

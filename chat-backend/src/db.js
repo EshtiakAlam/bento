@@ -11,4 +11,6 @@ sequelize.authenticate()
   .then(() => console.log('Connected to POSTGRES'))
   .catch(err => console.error('DB Error:', err));
 
+sequelize.sync({ alter: true, force: false })
+  .then(() => console.log('Database synchronized'))
 module.exports = sequelize;

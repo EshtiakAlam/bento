@@ -58,7 +58,7 @@ module.exports.login_post = async (req, res) => {
 
   try {
     const user = await User.login(email, password);
-    const token = createToken(user._id, user.username, email);
+    const token = createToken(user._id, user.username, user.email);
     res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); 
     res.status(200).json({ user: user._id });
   } catch (error) {
@@ -68,6 +68,15 @@ module.exports.login_post = async (req, res) => {
 }
 
 module.exports.logout_get = (req, res) => {
-  res.cookie('jwt', '', { maxAge: 1 });
-  res.redirect('/');
+  try {
+    if (req.cookies.jwt){
+      res.cookie('jwt', '', { maxAge: 1 });
+      return res.status(200).json({ message: 'User logged out successfully' });
+    }
+    return res.status(400).json({ error: 'No user is logged in' });
+  } catch (error) {
+    console.error('Error during logout:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+  
 }

@@ -13,14 +13,21 @@ const Chat = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false
         },
-            user2_email: {
-                type: DataTypes.STRING,
-                allowNull: false
-            }
+        user2_email: {
+            type: DataTypes.STRING,
+            allowNull: false
         },
-        {
-            timestamps: true,
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
         }
-    );
+    }
+);
 
 module.exports = Chat;

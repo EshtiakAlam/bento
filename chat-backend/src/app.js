@@ -38,7 +38,7 @@ server.listen(PORT, () => console.log(`Chat backend running on port ${PORT}`));
 
 
 //Routes
-app.use(requireAuth,  chatRoutes);
+app.use('/chats',requireAuth,  chatRoutes);
 app.use('/messages', requireAuth, messageRoutes);
 
 

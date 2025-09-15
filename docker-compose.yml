@@ -3,6 +3,8 @@ services:
   postgres:
     image: postgres
     container_name: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -37,12 +39,14 @@ services:
 
     ports:
       - "3000:3000"
-    volumes:
-      - ./chat-backend:/app
-      - /app/node_modules
     networks:
       - chat-network
+    depends_on:
+      - postgres
 
 networks:
   chat-network:
     driver: bridge
+
+volumes:
+  pgdata:
